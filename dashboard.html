@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="dashboardContent">
+        Loading dashboard...
+    </div>
+    <button id="logoutBtn">Logout</button>
+
+    <script>
+        async function fetchDashboard() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Not authorized');
+                window.location.href = 'login.html';  // Ensure correct path here
+                return;
+            }
+
+            const res = await fetch('http://localhost:5200/api/dashboard', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                document.getElementById('dashboardContent').innerText = data.message;
+            } else {
+                alert('Unauthorized, please login again');
+                window.location.href = 'login.html';  // Ensure correct path here
+            }
+        }
+
+        fetchDashboard();
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token'); // 🔥 Remove token
+            alert('Logged out successfully!');
+            window.location.href = 'login.html';  // Ensure correct path here
+        });
+    </script>
+</body>
+</html>
